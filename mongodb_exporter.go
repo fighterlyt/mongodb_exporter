@@ -36,6 +36,7 @@ var (
 		"    \tIf not provided: Every client will be accepted.")
 
 	mongodbURIFlag = flag.String("mongodb.uri", mongodbDefaultURI(), "Mongodb URI, format: [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]")
+	mongodbTLS     = flag.Bool("mongodb.tls", false, "Use TLS for connect to MongoDB")
 	mongodbTLSCert = flag.String("mongodb.tls-cert", "", "Path to PEM file that conains the certificate (and optionally also the private key in PEM format).\n"+
 		"    \tThis should include the whole certificate chain.\n"+
 		"    \tIf provided: The connection will be opened via TLS to the MongoDB server.")
@@ -149,6 +150,7 @@ func startWebServer() {
 func registerCollector() {
 	mongodbCollector := collector.NewMongodbCollector(collector.MongodbCollectorOpts{
 		URI:                      *mongodbURIFlag,
+		TLSEnabled:               *mongodbTLS,
 		TLSCertificateFile:       *mongodbTLSCert,
 		TLSPrivateKeyFile:        *mongodbTLSPrivateKey,
 		TLSCaFile:                *mongodbTLSCa,
