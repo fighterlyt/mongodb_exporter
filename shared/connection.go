@@ -9,7 +9,7 @@ import (
 	"net"
 
 	"github.com/golang/glog"
-	"gopkg.in/mgo.v2"
+	mgo "gopkg.in/mgo.v2"
 )
 
 const (
@@ -20,6 +20,7 @@ const (
 // MongoSessionOpts represents options for a Mongo session
 type MongoSessionOpts struct {
 	URI                   string
+	TLSEnabled            bool
 	TLSCertificateFile    string
 	TLSPrivateKeyFile     string
 	TLSCaFile             string
@@ -35,6 +36,11 @@ func MongoSession(opts MongoSessionOpts) *mgo.Session {
 	if err != nil {
 		glog.Errorf("Cannot connect to server using url %s: %s", opts.URI, err)
 		return nil
+	}
+	if opts.TLSEnabled {
+		dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
+			return tls.Dial("tcp", addr.String(), &tls.Config{})
+		}
 	}
 
 	dialInfo.Direct = true // Force direct connection

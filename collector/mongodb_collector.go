@@ -6,7 +6,7 @@ import (
 	"github.com/dcu/mongodb_exporter/shared"
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
-	"gopkg.in/mgo.v2"
+	mgo "gopkg.in/mgo.v2"
 )
 
 var (
@@ -25,6 +25,7 @@ var (
 // MongodbCollectorOpts is the options of the mongodb collector.
 type MongodbCollectorOpts struct {
 	URI                      string
+	TLSEnabled               bool
 	TLSCertificateFile       string
 	TLSPrivateKeyFile        string
 	TLSCaFile                string
@@ -45,6 +46,7 @@ type MongodbCollectorOpts struct {
 func (in MongodbCollectorOpts) toSessionOps() shared.MongoSessionOpts {
 	return shared.MongoSessionOpts{
 		URI:                   in.URI,
+		TLSEnabled:            in.TLSEnabled,
 		TLSCertificateFile:    in.TLSCertificateFile,
 		TLSPrivateKeyFile:     in.TLSPrivateKeyFile,
 		TLSCaFile:             in.TLSCaFile,
